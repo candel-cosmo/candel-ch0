@@ -2,22 +2,10 @@
 import numpy as np
 import pytest
 
-from candel.mock.CH0_mock import (CZ_NO_LOWER_LIMIT, draw_CH0_hosts,
-                                  sigma_mu_law)
-from candel.model.utils import (log_prob_integrand_sel,
-                                log_prob_integrand_window_sel)
+from candel_ch0.mock import CZ_NO_LOWER_LIMIT, draw_CH0_hosts, sigma_mu_law
 
 TRUTH = {"H0": 72.5, "beta": 1.0, "Vext_mag": 262.0, "Vext_ell": 302.0,
          "Vext_b": -27.0}
-
-
-def test_window_without_lower_limit_matches_one_sided():
-    x = np.linspace(500.0, 6000.0, 50)
-    e = np.full_like(x, 150.0)
-    one = log_prob_integrand_sel(x, e, 3300.0, 300.0)
-    win = log_prob_integrand_window_sel(x, e, CZ_NO_LOWER_LIMIT, 3300.0,
-                                        300.0)
-    np.testing.assert_allclose(np.asarray(win), np.asarray(one), atol=1e-6)
 
 
 @pytest.fixture

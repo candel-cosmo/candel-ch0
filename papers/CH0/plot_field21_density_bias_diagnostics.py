@@ -14,14 +14,14 @@ os.environ.setdefault("JAX_PLATFORM_NAME", "cpu")
 os.environ.setdefault("XLA_PYTHON_CLIENT_PREALLOCATE", "false")
 
 import candel  # noqa: E402
-from candel.pvdata.field_cache import (  # noqa: E402
+from candel.field.field_cache import (  # noqa: E402
     _field_cache_dir_from_config, _field_cache_project_from_config)
-from candel.pvdata.volume_density import _load_volume_data_for_H0  # noqa: E402
+from candel.field.volume_density import _load_volume_data_for_H0  # noqa: E402
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[4]
 INTEGRAL_DIR = (
     Path(__file__).resolve().parent
     / "ch0_single_selection_integral_plots")

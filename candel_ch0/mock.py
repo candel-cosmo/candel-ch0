@@ -1,17 +1,5 @@
 # Copyright (C) 2026 Richard Stiskalek
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at your
-# option) any later version.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
-# Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# Licensed under the MIT License; see LICENSE in the repository root.
 """
 Mock generator for the CH0 JWST forecast in a single reconstruction.
 
@@ -30,10 +18,11 @@ import numpy as np
 from scipy.linalg import cholesky
 from scipy.stats import norm
 
-from ..cosmo.cosmography import Distance2Distmod, Distance2Redshift
-from ..util import SPEED_OF_LIGHT, fprint, galactic_to_radec_cartesian
-from ._field_utils import (build_field_pool, build_field_pool_evaluator,
-                           galaxy_bias_log_weight)
+from candel.cosmo.cosmography import Distance2Distmod, Distance2Redshift
+from candel.util import SPEED_OF_LIGHT, fprint, galactic_to_radec_cartesian
+from candel.field.mock_utils import (build_field_pool,
+                                     build_field_pool_evaluator,
+                                     galaxy_bias_log_weight)
 
 # sigma_mu(d) = A + B d / Mpc, fitted to the Cepheid-only distance-modulus
 # errors of the 35 SH0ES hosts against their Cepheid distances.
@@ -86,7 +75,7 @@ def build_CH0_host_pool(field_loader, r_sphere_h, pool_size, bias_params,
     del evaluator
     pool = {k: np.concatenate(v)[:pool_size] for k, v in out.items()}
 
-    from ..field import interpolate_los_density_velocity
+    from candel.field import interpolate_los_density_velocity
     los_density, los_velocity = interpolate_los_density_velocity(
         field_loader, r_grid_h, pool["RA"], pool["dec"], verbose=verbose)
     if density_divisor is not None:

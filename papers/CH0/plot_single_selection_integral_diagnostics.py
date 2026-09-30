@@ -16,16 +16,16 @@ os.environ.setdefault("JAX_PLATFORM_NAME", "cpu")
 os.environ.setdefault("XLA_PYTHON_CLIENT_PREALLOCATE", "false")
 
 import candel  # noqa: E402
-from candel.pvdata.catalogues import load_SH0ES_separated  # noqa: E402
-from candel.pvdata.field_cache import (  # noqa: E402
+from candel_pv.catalogues import load_SH0ES_separated  # noqa: E402
+from candel.field.field_cache import (  # noqa: E402
     _field_cache_dir_from_config, _field_cache_project_from_config)
-from candel.pvdata.volume_density import _load_volume_data_for_H0  # noqa: E402
+from candel.field.volume_density import _load_volume_data_for_H0  # noqa: E402
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import scienceplots  # noqa: F401,E402
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[4]
 TASK_SAMPLED = ROOT / "scripts" / "runs" / "tasks_CH0_single.txt"
 TASK_FIXED = ROOT / "scripts" / "runs" / "tasks_CH0_single_fixed_bias.txt"
 DEFAULT_OUTDIR = (
@@ -246,7 +246,6 @@ def reference_selection_params(rows, config_path):
         cepheid_host_cz_cmb_max=get_nested(
             config, ("io", "SH0ES", "cepheid_host_cz_cmb_max")),
         los_data_path=None,
-        rand_los_data_path=None,
         volume_data=None,
         field_indices=None,
         drop_observation=get_nested(

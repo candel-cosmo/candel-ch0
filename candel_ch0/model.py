@@ -1,17 +1,5 @@
 # Copyright (C) 2025 Richard Stiskalek
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at your
-# option) any later version.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
-# Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# Licensed under the MIT License; see LICENSE in the repository root.
 """Cepheid-calibrated H0 (CH0) forward model in JAX."""
 import jax.numpy as jnp
 import numpy as np
@@ -21,12 +9,13 @@ from jax.scipy.stats import norm as norm_jax
 from numpyro import deterministic, factor, plate, sample
 from numpyro.distributions import MultivariateNormal, Normal, Uniform
 
-from ..util import fprint, get_nested, replace_prior_with_delta
-from .base_model import LOG_4PI, H0ModelBase
-from .integration import simpson_log_weights
-from .pv_utils import rsample, sample_galaxy_bias
-from .utils import (log_prob_integrand_window_sel, logmeanexp,
-                    mvn_logpdf_cholesky, normal_logpdf_var, predict_cz)
+from candel.util import fprint, get_nested, replace_prior_with_delta
+from candel.model.base_model import LOG_4PI, H0ModelBase
+from candel.model.integration import simpson_log_weights
+from candel.model.pv_utils import rsample, sample_galaxy_bias
+from candel.model.utils import (log_prob_integrand_window_sel, logmeanexp,
+                                mvn_logpdf_cholesky, normal_logpdf_var,
+                                predict_cz)
 
 ###############################################################################
 #                          Base CH0 model                                     #
@@ -133,8 +122,9 @@ class CH0Model(H0ModelBase):
     # ------------------------------------------------------------------
 
     def _load_data(self, data):
-        self.config.setdefault("io", {}).setdefault("load_rand_los", False)
         super()._load_data(data)
+        # Typical host cz error, added to sigma_v in the selection kernels.
+        self.e2_cz_sel = float(np.median(self.e2_czcmb_cepheid_host))
         self._setup_cepheid_host_index()
         self._setup_cz_windows(data)
 
@@ -276,22 +266,6 @@ class CH0Model(H0ModelBase):
     # ------------------------------------------------------------------
     #  Validation
     # ------------------------------------------------------------------
-
-    def _validate_selection_width(self, name):
-        """Require fixed selection widths to be present and positive."""
-        if getattr(self, f"_infer_{name}", False):
-            return
-        value = getattr(self, name)
-        if value is None:
-            raise ValueError(
-                f"`{name}` must be set or 'infer' for "
-                f"{self.which_selection} selection.")
-        try:
-            value_arr = np.asarray(value, dtype=float)
-        except (TypeError, ValueError):
-            raise ValueError(f"`{name}` must be numeric, got {value!r}.")
-        if np.any(~np.isfinite(value_arr)) or np.any(value_arr <= 0):
-            raise ValueError(f"`{name}` must be positive, got {value!r}.")
 
     def _validate_active_selection_widths(self):
         width_names = {
@@ -442,24 +416,6 @@ class CH0Model(H0ModelBase):
 
         return mu_host, mu_N4258, mu_LMC, mu_M31, ll_mu_N4258 + ll_mu_LMC
 
-    def sigma_v_from_density(self, delta, sigma_v_low, sigma_v_high,
-                             log_rho_t, k):
-        """Map overdensity to sigma_v through a sigmoid in log density."""
-        rho = jnp.maximum(1.0 + delta, 1e-6)
-        log_rho = jnp.log(rho)
-        return sigma_v_low + (sigma_v_high - sigma_v_low) / (
-            1.0 + jnp.exp(-k * (log_rho - log_rho_t)))
-
-    def _volume_sigma_v_fields(self, sigma_v_low, sigma_v_high,
-                               log_rho_t, k):
-        """Evaluate density-dependent sigma_v on the 3D selection grid."""
-        if self.density_3d_mode == "log_rho":
-            delta_3d = jnp.exp(self.density_3d_fields) - 1.0
-        else:
-            delta_3d = self.density_3d_fields
-        return self.sigma_v_from_density(
-            delta_3d, sigma_v_low, sigma_v_high, log_rho_t, k)
-
     def _factor_sn_likelihood(self, mu_host_all, M_B, n_mag=None):
         """Add the SN-magnitude likelihood for all or the first n_mag hosts."""
         if n_mag == 0:
@@ -505,26 +461,6 @@ class CH0Model(H0ModelBase):
         if L_dist.shape[0] == 0:
             return jnp.zeros(self.num_hosts)
         return L_dist.T @ terms
-
-    def _record_per_galaxy_log_likelihood(
-            self, ll_without_selection, ll_selection_observed,
-            log_selection_integral=0.0):
-        """Expose per-host CH0 likelihood terms as deterministic sites."""
-        if not self.save_log_likelihood_per_galaxy:
-            return
-
-        with_selection = (
-            ll_without_selection
-            + ll_selection_observed
-            - log_selection_integral
-        )
-        deterministic("log_likelihood_per_galaxy", ll_without_selection)
-        deterministic(
-            "log_observed_selection_per_galaxy",
-            ll_selection_observed)
-        deterministic("log_selection_integral", log_selection_integral)
-        deterministic(
-            "log_likelihood_per_galaxy_with_selection", with_selection)
 
     def _selection_radial_log_measure(self, H0):
         """Selection measure matching the configured host-distance prior."""

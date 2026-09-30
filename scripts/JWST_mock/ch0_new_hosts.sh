@@ -6,8 +6,8 @@
 # usage: ch0_new_hosts.sh [-q QUEUE] [--time H] [--dry]
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-# shellcheck source=../_submit_lib.sh
+ROOT="${CANDEL_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)}"
+# shellcheck source=../../../../scripts/_submit_lib.sh
 source "$ROOT/scripts/_submit_lib.sh"
 
 case "$CANDEL_CLUSTER" in
@@ -49,17 +49,17 @@ for k in "${fields[@]}"; do
 done
 
 cd "$ROOT"
-mkdir -p "$ROOT/scripts/CH0_JWST_mock/logs"
+mkdir -p "$ROOT/packages/candel-ch0/scripts/JWST_mock/logs"
 for j in "${jobs[@]}"; do
     cmd=""
     IFS=';' read -ra runs <<< "$j"
     for r in "${runs[@]}"; do
         [[ -z "$r" ]] && continue
-        cmd+="$CANDEL_PYTHON -u $ROOT/scripts/CH0_JWST_mock/ch0_new_hosts.py run $r; "
+        cmd+="$CANDEL_PYTHON -u $ROOT/packages/candel-ch0/scripts/JWST_mock/ch0_new_hosts.py run $r; "
     done
     name="ch0_newhosts_$(echo "$j" | tr -cd '[:alnum:]_.' | cut -c1-40)"
     echo "[ch0_new_hosts] $j (queue $queue)"
     submit_job --queue "$queue" --mem 16 --gpu --name "$name" \
-        "${time_flag[@]}" --logdir "$ROOT/scripts/CH0_JWST_mock/logs" "${dry_flag[@]}" -- \
+        "${time_flag[@]}" --logdir "$ROOT/packages/candel-ch0/scripts/JWST_mock/logs" "${dry_flag[@]}" -- \
         /usr/bin/env PYTHONPATH="$ROOT" bash -c "$cmd"
 done

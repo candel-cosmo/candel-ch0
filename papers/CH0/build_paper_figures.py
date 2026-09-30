@@ -12,7 +12,8 @@ from astropy.cosmology import FlatLambdaCDM
 from scipy.signal import savgol_filter
 from scipy.stats import gaussian_kde, kstest
 
-import candel
+import candel_ch0
+import candel_pv
 from candel import SPEED_OF_LIGHT
 from candel.plotting.corner import plot_corner_from_hdf5
 
@@ -25,7 +26,7 @@ TABLE = RESULTS / "table"
 DIST = RESULTS / "distances"
 MIXED = RESULTS / "mixed_selection"
 FIGURES = Path("/mnt/users/rstiskalek/Papers/CH0/Figures")
-CONFIG = ROOT / "scripts" / "runs" / "configs" / "config_CH0.toml"
+CONFIG = ROOT / "packages" / "candel-ch0" / "configs" / "config_CH0.toml"
 DATA = ROOT / "data"
 
 COLS = ["#87193d", "#1e42b9", "#d42a29", "#05dd6b", "#ee35d5"]
@@ -383,9 +384,9 @@ def plot_host_histograms():
         "Use the detailed paper_plots.ipynb implementation with Poisson "
         "errors and selection-boundary annotations."
     )
-    data_sel = candel.pvdata.load_SH0ES_separated(
+    data_sel = candel_ch0.load_SH0ES_separated(
         DATA / "SH0ES", cepheid_host_cz_cmb_max=3300)
-    data_pp = candel.pvdata.load_PantheonPlus(
+    data_pp = candel_pv.load_PantheonPlus(
         DATA / "Pantheon+", return_all=True, removed_PV_from_covmat=False)
     bins_mag = np.linspace(9, 14.0, 12)
     bins_cz = np.linspace(0, 3300, 12)
@@ -422,7 +423,7 @@ def plot_host_histograms():
 
 def main():
     FIGURES.mkdir(parents=True, exist_ok=True)
-    data = candel.pvdata.load_SH0ES_from_config(CONFIG)
+    data = candel_ch0.load_SH0ES_from_config(CONFIG)
     # Keep SH0ES_host_histograms.pdf from the original paper_plots.ipynb
     # implementation; it has extra selection-boundary and Poisson-error
     # annotations that this rebuild script should not overwrite.

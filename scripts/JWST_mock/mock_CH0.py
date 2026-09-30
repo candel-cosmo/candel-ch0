@@ -1,28 +1,30 @@
 """CH0 JWST forecast with mocks in a single Manticore realisation.
 
 Mock hosts have Cepheid distance moduli known up to the common offset M_W
-(see `candel.mock.CH0_mock`), redshifts from one field realisation plus a
+(see `candel_ch0.mock`), redshifts from one field realisation plus a
 fixed 150 km/s scatter, and known redshift-window selections. The same
 realisation is used to analyse every mock.
 
 Steps (run from the repository root):
-    python scripts/CH0_JWST_mock/mock_CH0.py pool
-    python scripts/CH0_JWST_mock/mock_CH0.py run --scenario M0 --seeds 0-9
-    python scripts/CH0_JWST_mock/mock_CH0.py collect
+    python packages/candel-ch0/scripts/JWST_mock/mock_CH0.py pool
+    python packages/candel-ch0/scripts/JWST_mock/mock_CH0.py run --scenario M0 --seeds 0-9
+    python packages/candel-ch0/scripts/JWST_mock/mock_CH0.py collect
 """
 import argparse
 import inspect
 import os
 import tempfile
 from os.path import exists, join
+from pathlib import Path
 
 import numpy as np
 import tomli_w
 
 import candel
+import candel_ch0
 from candel.field import name2field_loader
-from candel.mock.CH0_mock import (CZ_NO_LOWER_LIMIT, build_CH0_host_pool,
-                                  draw_CH0_hosts, make_CH0_mock_data)
+from candel_ch0.mock import (CZ_NO_LOWER_LIMIT, build_CH0_host_pool,
+                             draw_CH0_hosts, make_CH0_mock_data)
 
 BASE_CONFIG = ("scripts/runs/generated_configs/CH0_JWST_forecast_sigv150/"
                "CH0_MAS-PCS_sel-redshift_ManticoreLocalCOLA_jwst.toml")
@@ -88,7 +90,7 @@ def make_config(num_warmup, num_samples):
 
 def load_template(config_path):
     """Real SH0ES data dict with the field-k selection volume at 70 Mpc/h."""
-    return candel.pvdata.load_SH0ES_from_config(config_path)
+    return candel_ch0.load_SH0ES_from_config(config_path)
 
 
 def cmd_pool(args):
@@ -130,10 +132,10 @@ def cmd_run(args):
                                    E_CZ, gen)
             data = make_CH0_mock_data(template, pool, hosts, TRUTH, E_CZ,
                                       FIELD_INDEX, gen)
-            model = candel.model.CH0Model(path, data)
-            post = candel.run_H0_inference(model, save_samples=False,
-                                           print_summary=False,
-                                           progress_bar=False)
+            model = candel_ch0.CH0Model(path, data)
+            post = candel.run_inference(model, save_samples=False,
+                                        print_summary=False,
+                                        progress_bar=False)
             np.savez(fout, H0=np.asarray(post["H0"]),
                      M_W=np.asarray(post["M_W"]),
                      n_hosts=len(hosts["cz_obs"]), H0_true=TRUTH["H0"])
@@ -165,8 +167,7 @@ def cmd_collect(args):
 
 def main():
     # Paths are relative to the repository root.
-    os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__)))))
+    os.chdir(Path(__file__).resolve().parents[4])
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("pool")

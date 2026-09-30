@@ -159,7 +159,6 @@ high = 1.0
 field_cache_project = "CH0"
 root_output = "results/CH0"
 fname_output = "results/CH0/test.hdf5"
-los_file_random = "data/los_random_<X>.hdf5"
 los_r0_decay_scale = 5
 
 # Override reconstruction grid for Cepheid H0.

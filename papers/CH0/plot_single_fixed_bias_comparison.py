@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import scienceplots  # noqa: F401,E402
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[4]
 TASK_SAMPLED = ROOT / "scripts" / "runs" / "tasks_CH0_single.txt"
 TASK_FIXED = ROOT / "scripts" / "runs" / "tasks_CH0_single_fixed_bias.txt"
 DEFAULT_OUTDIR = (

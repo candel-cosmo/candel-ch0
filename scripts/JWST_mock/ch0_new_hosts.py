@@ -12,24 +12,26 @@ the posterior widths are forecasts. The added hosts are selected in a
 separate redshift window at 3300--5500 km/s.
 
 Steps (run from the repository root):
-    python scripts/CH0_JWST_mock/ch0_new_hosts.py prep
-    python scripts/CH0_JWST_mock/ch0_new_hosts.py run --scenario HST_plus5
-    python scripts/CH0_JWST_mock/ch0_new_hosts.py collect
+    python packages/candel-ch0/scripts/JWST_mock/ch0_new_hosts.py prep
+    python packages/candel-ch0/scripts/JWST_mock/ch0_new_hosts.py run --scenario HST_plus5
+    python packages/candel-ch0/scripts/JWST_mock/ch0_new_hosts.py collect
 """
 import argparse
 import inspect
 import os
 import tempfile
 from os.path import exists, join
+from pathlib import Path
 
 import numpy as np
 import tomli_w
 from scipy.linalg import block_diag, cholesky
 
 import candel
+import candel_ch0
 from candel.cosmo.cosmography import Distance2Distmod, Distance2Redshift
 from candel.field import interpolate_los_density_velocity, name2field_loader
-from candel.mock.CH0_mock import CZ_NO_LOWER_LIMIT
+from candel_ch0.mock import CZ_NO_LOWER_LIMIT
 from candel.util import (SPEED_OF_LIGHT, galactic_to_radec_cartesian,
                          heliocentric_to_cmb)
 
@@ -90,7 +92,7 @@ def make_config(variant, num_warmup, num_samples, field=None):
 def cmd_prep(args):
     config, path = make_config("", 10, 10)
     try:
-        data = candel.pvdata.load_SH0ES_from_config(path)
+        data = candel_ch0.load_SH0ES_from_config(path)
     finally:
         os.unlink(path)
     r_h = np.asarray(data["host_los_r"])
@@ -262,7 +264,7 @@ def cmd_run(args):
     _, path = make_config(variant, args.num_warmup, args.num_samples,
                           args.field)
     try:
-        data = candel.pvdata.load_SH0ES_from_config(path)
+        data = candel_ch0.load_SH0ES_from_config(path)
         n_far = 0
         if with_new:
             new = select_fields(
@@ -273,10 +275,10 @@ def cmd_run(args):
                              args.logP)
             n_far = len(new["names"])
         data = add_windows(data, n_far)
-        model = candel.model.CH0Model(path, data)
-        post = candel.run_H0_inference(model, save_samples=False,
-                                       print_summary=True,
-                                       progress_bar=False)
+        model = candel_ch0.CH0Model(path, data)
+        post = candel.run_inference(model, save_samples=False,
+                                    print_summary=True,
+                                    progress_bar=False)
     finally:
         os.unlink(path)
     H0 = np.asarray(post["H0"])
@@ -298,8 +300,7 @@ def cmd_collect(args):
 
 def main():
     # Paths are relative to the repository root.
-    os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__)))))
+    os.chdir(Path(__file__).resolve().parents[4])
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("prep")

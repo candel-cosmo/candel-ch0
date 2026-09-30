@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # Copyright (C) 2026 Richard Stiskalek
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 3 of the License, or (at your
-# option) any later version.
+# Licensed under the MIT License; see LICENSE in the repository root.
 """Plot SH0ES Cepheid magnitudes against period by galaxy for CH0.
 
 The data transformation mirrors the Cepheid part of
-``candel.pvdata.catalogues.load_SH0ES_separated`` without building covariance
+``candel_pv.catalogues.load_SH0ES_separated`` without building covariance
 factorisations that are not needed for this diagnostic plot.
 """
 import os
@@ -22,8 +19,8 @@ except ModuleNotFoundError:  # pragma: no cover
     import tomli as tomllib
 
 
-ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_CONFIG = ROOT / "scripts" / "runs" / "configs" / "config_CH0.toml"
+ROOT = Path(__file__).resolve().parents[4]
+DEFAULT_CONFIG = ROOT / "packages" / "candel-ch0" / "configs" / "config_CH0.toml"
 DEFAULT_OUTDIR = ROOT / "plots" / "paper_CH0"
 
 N_CEPHEIDS = 3130
