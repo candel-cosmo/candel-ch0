@@ -27,7 +27,7 @@ def _heavy_imports():
     import numpy as np
 
 
-PLOTS_DIR = "/Users/rstiskalek/Projects/CANDEL/plots/paper_CH0"
+PLOTS_DIR = "/Users/rstiskalek/Projects/candel-cosmo/CANDEL/plots/paper_CH0"
 
 C_LIGHT = 299792.458
 H0 = 70.0
