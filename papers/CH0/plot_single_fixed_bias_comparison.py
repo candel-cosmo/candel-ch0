@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import scienceplots  # noqa: F401,E402
 
-from candel.util import CANDEL_ROOT as ROOT  # noqa: E402
+from candel.util import CANDEL_ROOT as ROOT, results_path  # noqa: E402
 TASK_SAMPLED = ROOT / "scripts" / "runs" / "tasks_CH0_single.txt"
 TASK_FIXED = ROOT / "scripts" / "runs" / "tasks_CH0_single_fixed_bias.txt"
 DEFAULT_OUTDIR = (
@@ -113,8 +113,8 @@ def task_specs(task_file, mode):
                 "family": family,
                 "field": int(get_nested(config, ("io", "field_indices"))),
                 "config": str(config_path),
-                "source": str(repo_path(get_nested(
-                    config, ("io", "fname_output")))),
+                "source": results_path(get_nested(
+                    config, ("io", "fname_output"))),
                 "which_bias": get_nested(config, ("model", "which_bias")),
                 **fixed_bias_values_from_config(config),
             })

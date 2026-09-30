@@ -16,8 +16,8 @@ import scienceplots  # noqa: E402,F401
 from matplotlib.colors import LinearSegmentedColormap, Normalize  # noqa: E402
 from scipy.stats import gaussian_kde, pearsonr, spearmanr  # noqa: E402
 
-from candel.util import CANDEL_ROOT as ROOT  # noqa: E402
-RESULTS = ROOT / "results" / "CH0_paper" / "single_fields"
+from candel.util import results_path  # noqa: E402
+RESULTS = Path(results_path("results", "CH0_paper", "single_fields"))
 DEFAULT_OUTDIR = RESULTS / "plots"
 DEFAULT_PATTERN = (
     "CH0_sel-SN_magnitude_manticore_2MPP_MULTIBIN_N256_DES_V2_"

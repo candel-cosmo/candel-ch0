@@ -15,9 +15,9 @@ from scipy.stats import pearsonr, spearmanr  # noqa: E402
 
 from candel.plotting.selection_diagnostics import \
     plot_raw_selection_evidence  # noqa: E402
+from candel.util import results_path  # noqa: E402
 
-ROOT = Path("/mnt/users/rstiskalek/CANDEL")
-RESULTS = ROOT / "results" / "CH0_paper" / "single_fields"
+RESULTS = Path(results_path("results", "CH0_paper", "single_fields"))
 DEFAULT_OUTDIR = RESULTS / "plots"
 PATTERN = (
     "CH0_sel-SN_magnitude_manticore_2MPP_MULTIBIN_N256_DES_V2"

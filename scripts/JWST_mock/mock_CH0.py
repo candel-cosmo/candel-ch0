@@ -28,7 +28,7 @@ from candel_ch0.mock import (CZ_NO_LOWER_LIMIT, build_CH0_host_pool,
 
 BASE_CONFIG = ("scripts/runs/generated_configs/CH0_JWST_forecast_sigv150/"
                "CH0_MAS-PCS_sel-redshift_ManticoreLocalCOLA_jwst.toml")
-OUT = "results/CH0_paper/jwst_forecast/mocks"
+OUT = candel.results_path("results/CH0_paper/jwst_forecast/mocks")
 FIELD = "ManticoreLocalCOLA"
 FIELD_INDEX = 0
 SEL_RADIUS = 70.0      # Mpc/h, covers cz ~ 5000 km/s plus the edge width

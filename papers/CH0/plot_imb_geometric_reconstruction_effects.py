@@ -11,9 +11,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
-from candel.util import CANDEL_ROOT as ROOT  # noqa: E402
+from candel.util import results_path  # noqa: E402
 SUMMARY_DIR = (
-    ROOT / "results" / "CH0_paper" / "imb_geometric"
+    Path(results_path("results", "CH0_paper", "imb_geometric"))
     / "plots" / "reconstruction_effects")
 FIGURE_DPI = 450
 CPLR_PARAMS = ("M_W", "b_W", "Z_W")

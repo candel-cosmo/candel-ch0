@@ -4,7 +4,9 @@ from os.path import exists, join
 import h5py
 import numpy as np
 
-ROOT = "results/CH0_paper/jwst_forecast"
+from candel.util import results_path
+
+ROOT = results_path("results/CH0_paper/jwst_forecast")
 
 ROWS = [
     ("CH0_noVext_sel-{sel}{v}_jwst", "No pec. vel., sigma_v"),

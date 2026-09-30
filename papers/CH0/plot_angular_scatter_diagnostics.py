@@ -17,9 +17,9 @@ import scienceplots  # noqa: F401,E402
 from matplotlib.colors import LinearSegmentedColormap, Normalize  # noqa: E402
 from scipy.stats import gaussian_kde  # noqa: E402
 
-from candel.util import CANDEL_ROOT as ROOT  # noqa: E402
+from candel.util import CANDEL_ROOT as ROOT, results_path  # noqa: E402
 TASK_FILE = ROOT / "scripts" / "runs" / "tasks_CH0_angular_scatter.txt"
-RESULTS = ROOT / "results" / "CH0_paper"
+RESULTS = Path(results_path("results", "CH0_paper"))
 DEFAULT_OUTDIR = RESULTS / "angular_scatter" / "plots"
 BASELINE_DIR = RESULTS / "single_fields"
 BASELINE_TEMPLATE = (
@@ -96,8 +96,8 @@ def task_specs(task_file):
                     config, ("io", "reconstruction_main",
                              "ManticoreLocalCOLA", "which_MAS")),
                 "config": str(config_path),
-                "source": str(repo_path(get_nested(
-                    config, ("io", "fname_output")))),
+                "source": results_path(get_nested(
+                    config, ("io", "fname_output"))),
             })
     if not specs:
         raise ValueError(f"No task configs found in `{task_file}`.")

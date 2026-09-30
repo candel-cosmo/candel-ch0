@@ -18,9 +18,10 @@ import scienceplots  # noqa: F401,E402
 from matplotlib.colors import LinearSegmentedColormap, Normalize  # noqa: E402
 from scipy.stats import gaussian_kde, pearsonr, spearmanr  # noqa: E402
 
-from candel.util import CANDEL_ROOT as ROOT  # noqa: E402
+from candel.util import CANDEL_ROOT as ROOT, results_path  # noqa: E402
 TASK_FILE = ROOT / "scripts" / "runs" / "tasks_CH0_single_fixed_bias.txt"
-RESULTS = ROOT / "results" / "CH0_paper" / "single_fields_fixed_bias"
+RESULTS = Path(results_path(
+    "results", "CH0_paper", "single_fields_fixed_bias"))
 DEFAULT_OUTDIR = RESULTS / "plots"
 FIELD_RE = re.compile(r"_field(\d+)_")
 FIGURE_DPI = 500
@@ -98,7 +99,7 @@ def delta_prior_value(config, name):
 def output_from_config(config_path):
     with config_path.open("rb") as handle:
         config = tomllib.load(handle)
-    output = repo_path(get_nested(config, ("io", "fname_output")))
+    output = Path(results_path(get_nested(config, ("io", "fname_output"))))
     field = int(get_nested(config, ("io", "field_indices")))
     mas = get_nested(
         config, ("io", "reconstruction_main", "ManticoreLocalCOLA",

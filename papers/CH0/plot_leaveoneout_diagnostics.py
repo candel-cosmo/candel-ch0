@@ -16,9 +16,9 @@ import numpy as np  # noqa: E402
 import scienceplots  # noqa: F401,E402
 from matplotlib.colors import Normalize  # noqa: E402
 
-from candel.util import CANDEL_ROOT as ROOT  # noqa: E402
+from candel.util import CANDEL_ROOT as ROOT, results_path  # noqa: E402
 TASK_FILE = ROOT / "scripts" / "runs" / "tasks_CH0_leaveoneout.txt"
-RESULTS = ROOT / "results" / "CH0_paper"
+RESULTS = Path(results_path("results", "CH0_paper"))
 DEFAULT_OUTDIR = RESULTS / "leaveoneout" / "plots"
 DEFAULT_REFERENCE = (
     RESULTS / "single_fields"
@@ -95,8 +95,8 @@ def task_specs(task_file):
                     config, ("io", "SH0ES", "drop_observation"))),
                 "field": int(get_nested(config, ("io", "field_indices"))),
                 "config": str(config_path),
-                "source": str(repo_path(get_nested(
-                    config, ("io", "fname_output")))),
+                "source": results_path(get_nested(
+                    config, ("io", "fname_output"))),
             })
     if not specs:
         raise ValueError(f"No task configs found in `{task_file}`.")

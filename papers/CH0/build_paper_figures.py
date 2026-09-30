@@ -16,19 +16,19 @@ import candel_ch0
 import candel_pv
 from candel import SPEED_OF_LIGHT
 from candel.plotting.corner import plot_corner_from_hdf5
+from candel.util import data_path, results_path
 
 matplotlib.use("Agg")
 import scienceplots  # noqa: E402,F401
 
-ROOT = Path("/mnt/users/rstiskalek/CANDEL")
 PACKAGE_ROOT = Path(__file__).resolve().parents[2]
-RESULTS = ROOT / "results" / "CH0_paper"
+RESULTS = Path(results_path("results", "CH0_paper"))
 TABLE = RESULTS / "table"
 DIST = RESULTS / "distances"
 MIXED = RESULTS / "mixed_selection"
 FIGURES = Path("/mnt/users/rstiskalek/Papers/CH0/Figures")
 CONFIG = PACKAGE_ROOT / "configs" / "config_CH0.toml"
-DATA = ROOT / "data"
+DATA = Path(data_path("data"))
 
 COLS = ["#87193d", "#1e42b9", "#d42a29", "#05dd6b", "#ee35d5"]
 MANTICORE_SN = "CH0_MAS-PCS_sel-SN_magnitude_ManticoreLocalCOLA_paper.hdf5"

@@ -13,7 +13,7 @@ Examples:
 """
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from os import makedirs
-from os.path import join
+from os.path import abspath, dirname, join
 
 
 def _heavy_imports():
@@ -27,7 +27,9 @@ def _heavy_imports():
     import numpy as np
 
 
-PLOTS_DIR = "/Users/rstiskalek/Projects/candel-cosmo/CANDEL/plots/paper_CH0"
+# candel-cosmo/plots, beside the checkouts.
+PLOTS_DIR = join(dirname(dirname(dirname(dirname(abspath(__file__))))),
+                 "plots", "paper_CH0")
 
 C_LIGHT = 299792.458
 H0 = 70.0

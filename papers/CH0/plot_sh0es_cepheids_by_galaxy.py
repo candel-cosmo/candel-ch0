@@ -22,7 +22,7 @@ except ModuleNotFoundError:  # pragma: no cover
 from candel.util import CANDEL_ROOT as ROOT  # noqa: E402
 PACKAGE_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = PACKAGE_ROOT / "configs" / "config_CH0.toml"
-DEFAULT_OUTDIR = ROOT / "plots" / "paper_CH0"
+DEFAULT_OUTDIR = ROOT.parent / "plots" / "paper_CH0"
 
 N_CEPHEIDS = 3130
 N_SN_HOSTS = 37
@@ -132,7 +132,7 @@ def _resolve_data_root(config, data_root):
     if root.is_absolute():
         return root
 
-    root_data = Path(config.get("root_data", ROOT)).expanduser()
+    root_data = Path(config.get("root_data", ROOT.parent)).expanduser()
     if not root_data.is_absolute():
         root_data = (ROOT / root_data).resolve()
     return (root_data / root).resolve()
