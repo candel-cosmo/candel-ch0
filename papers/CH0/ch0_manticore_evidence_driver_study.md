@@ -63,17 +63,17 @@ It is partly cancelled by a worse raw total likelihood, so it does not become th
 
 Analysis script:
 
-`/mnt/users/rstiskalek/CANDEL/papers/CH0/plot_manticore_evidence_drivers.py`
+`/mnt/users/rstiskalek/candel-cosmo/candel/papers/CH0/plot_manticore_evidence_drivers.py`
 
 Run:
 
 ```bash
-/mnt/users/rstiskalek/CANDEL/venv_candel/bin/python \
-  /mnt/users/rstiskalek/CANDEL/papers/CH0/plot_manticore_evidence_drivers.py
+/mnt/users/rstiskalek/candel-cosmo/candel/venv_candel/bin/python \
+  /mnt/users/rstiskalek/candel-cosmo/candel/papers/CH0/plot_manticore_evidence_drivers.py
 ```
 
 Main outputs:
 
-- `/mnt/users/rstiskalek/CANDEL/results/CH0_paper/single_fields/plots/ch0_manticore_evidence_driver_summary.txt`
-- `/mnt/users/rstiskalek/CANDEL/results/CH0_paper/single_fields/plots/ch0_manticore_evidence_driver_summary.csv`
-- `/mnt/users/rstiskalek/CANDEL/results/CH0_paper/single_fields/plots/ch0_manticore_raw_likelihood_vs_selection.png`: two-panel raw-likelihood/selection-normalisation/evidence diagnostic.
+- `/mnt/users/rstiskalek/candel-cosmo/candel/results/CH0_paper/single_fields/plots/ch0_manticore_evidence_driver_summary.txt`
+- `/mnt/users/rstiskalek/candel-cosmo/candel/results/CH0_paper/single_fields/plots/ch0_manticore_evidence_driver_summary.csv`
+- `/mnt/users/rstiskalek/candel-cosmo/candel/results/CH0_paper/single_fields/plots/ch0_manticore_raw_likelihood_vs_selection.png`: two-panel raw-likelihood/selection-normalisation/evidence diagnostic.
